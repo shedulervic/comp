@@ -5,7 +5,10 @@ namespace App\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Entity\Product;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends Controller
 {
@@ -31,19 +34,14 @@ class ProductController extends Controller
 	
 	/**
      * @Route("/product/{id}", name="product_show")
+	 * @param \Symfony\Component\HttpFoundation\Request $request
      */
-	 public function showAction($id)
+	 public function showAction(Product $product)
 	 {
-		 $product = $this->getDoctrine()
-		   ->getRepository(Product::class)
-		   ->find($id);
-		   
-		   if (!$product)
-		   {
-			   throw $this->createNotFoundException('No product found for id '.$id);
+		   if (!$product instanceof Request) {
+            throw new NotFoundHttpException('продукт ненайден');
 		   }
 		   return new Response('Check out this great product: '.$product->getName());
 	 }
-	 
 	 
 }
